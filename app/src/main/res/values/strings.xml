@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Moto FM Radio</string>
+    <string name="status_initializing">正在初始化...</string>
+    <string name="status_starting">正在启动FM收音机...</string>
+    <string name="status_connecting">FM服务连接中...</string>
+    <string name="status_playing">正在播放: 102.6 MHz</string>
+    <string name="status_failed">FM服务连接失败</string>
+</resources>

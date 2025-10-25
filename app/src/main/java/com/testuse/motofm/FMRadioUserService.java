@@ -13,6 +13,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.IInterface;
+import android.os.Parcel;
+
 import android.util.Log;
 
 import android.app.IServiceConnection;
@@ -61,14 +63,72 @@ public class FMRadioUserService extends IFMRadioUserService.Stub {
     
     @Override
     public IBinder getFMRadioService() throws RemoteException {
-        try {
 	    return null;
 
+    }
+
+
+    private boolean bindServiceWithAIDL() {
+	try{
+             return false;
+
         } catch (Exception e) {
-            Log.e(TAG, "Failed to connect to FM Radio service", e);
+            Log.e(TAG, "AIDL 绑定失败", e);
+            return false;
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////
+    private IBinder getActivityManagerBinder() {
+        try {
+            // 仍然需要反射获取 ServiceManager，但这是唯一需要反射的地方
+            Class<?> serviceManagerClass = Class.forName("android.os.ServiceManager");
+            Method getServiceMethod = serviceManagerClass.getMethod("getService", String.class);
+            return (IBinder) getServiceMethod.invoke(null, "activity");
+        } catch (Exception e) {
+            Log.e(TAG, "获取 ActivityManager Binder 失败", e);
             return null;
         }
     }
-    
+
+    private android.app.IActivityManager getActivityManagerAIDL() {
+        try {
+            // 获取 ActivityManagerService 的 Binder
+            IBinder amBinder = getActivityManagerBinder();
+            if (amBinder == null) {
+                return null;
+            }
+
+            // 使用我们的 AIDL 接口
+            return android.app.IActivityManager.Stub.asInterface(amBinder);
+
+        } catch (Exception e) {
+            Log.e(TAG, "获取 IActivityManager AIDL 失败", e);
+            return null;
+        }
+    }
+
+    private android.app.IServiceConnection createServiceConnectionAIDL(final IBinder[] binderHolder,
+                                                                      final CountDownLatch latch) {
+        return new android.app.IServiceConnection.Stub() {
+            @Override
+            public void connected(ComponentName name, IBinder service) throws RemoteException {
+                Log.d(TAG, "服务连接成功: " + name);
+                binderHolder[0] = service;
+                latch.countDown();
+            }
+
+            @Override
+            public void disconnected(ComponentName name) throws RemoteException {
+                Log.d(TAG, "服务断开: " + name);
+                binderHolder[0] = null;
+                latch.countDown();
+            }
+        };
+    }
+
+    ///////////////////////////////////////////
+
     
 }

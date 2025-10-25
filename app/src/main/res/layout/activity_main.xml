@@ -9,10 +9,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Moto FM Radio"
+        android:text="Moto FM Radio (Shizuku)"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:id="@+id/tv_status"
@@ -32,5 +32,15 @@
         android:gravity="center"
         android:padding="16dp"
         android:layout_marginTop="32dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="通过 Shizuku 访问系统 FM 服务"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textColor="#666666"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

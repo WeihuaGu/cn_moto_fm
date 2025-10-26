@@ -7,6 +7,19 @@
         android:label="Moto FM Radio"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
         
+	<meta-data
+            android:name="xposedmodule"
+            android:value="true"/>
+        <meta-data
+            android:name="xposeddescription"
+            android:value="enable fm service connect" />
+        <meta-data 
+            android:name="xposedminversion"     
+            android:value="54"/>
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposedscope"/>
+
         <!-- Shizuku Provider -->
         <provider
             android:name="rikka.shizuku.ShizukuProvider"

@@ -18,10 +18,17 @@ public class FMRadioClient {
     private IFMRadioService mService;
     private ServiceConnection mConnection;
     private boolean mIsConnected = false;
+    private IFMRadioListener mListener;
     
     public FMRadioClient(Context context) {
         mContext = context;
     }
+    public void setListener(IFMRadioListener listener) {
+        mListener = listener;
+    }
+    public void connect(){
+    }
+
     
     public boolean tune(int frequency) {
 	return false;

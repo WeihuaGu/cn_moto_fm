@@ -9,6 +9,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://api.xposed.info/' }
         // 如果需要，可以添加阿里云镜像作为备选
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/google' }

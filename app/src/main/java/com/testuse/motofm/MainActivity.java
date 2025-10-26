@@ -8,7 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements IShizukuFMListener {
+public class MainActivity extends AppCompatActivity implements IShizukuFMListener , IFMRadioListener{
     private static final String TAG = "MotoFMMain";
     private ShizukuFMClient mShizukuFMClient;
 
@@ -27,11 +27,15 @@ public class MainActivity extends AppCompatActivity implements IShizukuFMListene
         mHandler = new Handler();
         mShizukuFMClient = new ShizukuFMClient(this);
         mShizukuFMClient.setListener(this);
-        updateStatus("正在初始化 Shizuku...");
+        //updateStatus("正在初始化 Shizuku...");
         // 延迟连接，确保界面加载完成
-        mHandler.postDelayed(this::connectWithShizuku, 1000);
+        // mHandler.postDelayed(this::connectWithShizuku, 1000);
     }
     
+    private void updateStatus(String message) {
+        runOnUiThread(() -> mTvStatus.setText(message));
+    }
+    /////////////////////////////////////////////////////////////
     private void connectWithShizuku() {
         updateStatus("检查 Shizuku 状态...");
 	if (!mShizukuFMClient.hasShizukuPermission()){
@@ -41,24 +45,17 @@ public class MainActivity extends AppCompatActivity implements IShizukuFMListene
         mShizukuFMClient.connect();
     }
     
-    
-    private void updateStatus(String message) {
-        runOnUiThread(() -> mTvStatus.setText(message));
-    }
-    
     // ShizukuFMListener 实现
     @Override
     public void onShizukuStateChanged(boolean available, String reason) {
         Log.d(TAG, "Shizuku state: " + available + " - " + reason);
     }
-    
     @Override
     public void onServiceConnected() {
         updateStatus("Shizuku服务已连接");
 	try{
            IBinder fmradiobinder = mShizukuFMClient.getFMRadioUserServiceObject().getFMRadioService();
 	   if(fmradiobinder != null){
-
 	   }else{
                 updateStatus("获取moto fmradio service失败");
 	   }
@@ -66,12 +63,29 @@ public class MainActivity extends AppCompatActivity implements IShizukuFMListene
 		Log.e(TAG, "get fmradio binder failed - RemoteException", e);
 	}
     }
-    
     @Override
     public void onServiceDisconnected() {
         updateStatus("Shizuku服务已断开");
     }
     
+    // IFMRadioListener 实现
+    @Override
+    public void onFMServiceConnected() {
+        updateStatus("FM服务已连接");
+    }
+    
+    @Override
+    public void onFMServiceDisconnected() {
+        updateStatus("FM服务已断连");
+    }
+    
+    @Override
+    public void onFMServiceBinderGet() {
+    }
+
+
+
+    ///////////////////////////////////////////////////
     @Override
     protected void onDestroy() {
         super.onDestroy();

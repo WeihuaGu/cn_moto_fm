@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity implements IShizukuFMListener , IFMRadioListener{
     private static final String TAG = "MotoFMMain";
     private ShizukuFMClient mShizukuFMClient;
+    private FMRadioClient mFMClient;
 
     private TextView mTvStatus;
     private Handler mHandler;
@@ -22,20 +23,27 @@ public class MainActivity extends AppCompatActivity implements IShizukuFMListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        
         mTvStatus = findViewById(R.id.tv_status);
         mHandler = new Handler();
+
         mShizukuFMClient = new ShizukuFMClient(this);
         mShizukuFMClient.setListener(this);
         //updateStatus("正在初始化 Shizuku...");
         // 延迟连接，确保界面加载完成
         // mHandler.postDelayed(this::connectWithShizuku, 1000);
+
+        mFMClient = new FMRadioClient(this);
+        mFMClient.setListener(this);
+        mHandler.postDelayed(this::connectWithFMClient, 1000);
     }
     
     private void updateStatus(String message) {
         runOnUiThread(() -> mTvStatus.setText(message));
     }
     /////////////////////////////////////////////////////////////
+    private void connectWithFMClient() {
+	mFMClient.connect();
+    }
     private void connectWithShizuku() {
         updateStatus("检查 Shizuku 状态...");
 	if (!mShizukuFMClient.hasShizukuPermission()){
@@ -81,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements IShizukuFMListene
     
     @Override
     public void onFMServiceBinderGet() {
+        updateStatus("获取到remote fm Ibinder");
+	mFMClient.tune(FIXED_FREQUENCY);
     }
 
 

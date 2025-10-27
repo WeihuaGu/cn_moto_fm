@@ -5,6 +5,7 @@ import android.content.pm.ServiceInfo;
 import android.os.Build;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodHook.MethodHookParam;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -44,7 +45,19 @@ public class EableFMConnect implements IXposedHookLoadPackage {
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
-			    try {
+                            nullFMServicePermisson(param);
+		    }
+		}
+	    );
+            
+        } catch (Throwable e) {
+            XposedBridge.log("RadioFramework: Error hooking FM Radio: " + e);
+        }
+    }
+
+
+    private void nullFMServicePermisson(MethodHookParam param){
+	    try {
                             if (param.args == null || param.args.length < 1 ||
                                 !(param.args[0] instanceof ComponentName)) {
                                 return;
@@ -68,27 +81,20 @@ public class EableFMConnect implements IXposedHookLoadPackage {
                             XposedBridge.log("ServiceBypass: New permission: " +
                                 (serviceInfo.permission != null ? serviceInfo.permission : "null") +
                                 ", exported: " + serviceInfo.exported);
-                        } catch (Throwable t) {
-                            XposedBridge.log("ServiceBypass: Error in getServiceInfo hook: " +
-                                Log.getStackTraceString(t));
-                        }
 
-		    }
-		}
-	    );
-            
-        } catch (Throwable e) {
-            XposedBridge.log("RadioFramework: Error hooking FM Radio: " + e);
-        }
+	    }catch(Throwable t){
+                            XposedBridge.log("ServiceBypass: Error in getServiceInfo hook");
+
+	    }
+
+
     }
-
-
      private Class<?> getComputerEngineClass(ClassLoader classLoader) {
         try {
             // Android AOSP 标准路径
             return XposedHelpers.findClass(
                 "com.android.server.pm.ComputerEngine", classLoader);
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) { return null; }
      }
 
      private boolean isTargetService(ComponentName component) {

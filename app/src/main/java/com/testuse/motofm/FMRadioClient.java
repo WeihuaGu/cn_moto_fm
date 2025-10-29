@@ -179,7 +179,7 @@ public class FMRadioClient implements TransactionSearchListener{
     @Override
     public void onDiscoveryStart() {
         Log.d(TAG, "开始发现事务ID");
-        mDiscovering = true;
+        istesting = true;
     }
 
     @Override
@@ -191,7 +191,7 @@ public class FMRadioClient implements TransactionSearchListener{
     @Override
     public void onDiscoveryEnd() {
         Log.d(TAG, "事务ID发现结束");
-        mDiscovering = false;
+        istesting = false;
 
         // 打印最终映射表
         if (mTransactionFinder != null) {

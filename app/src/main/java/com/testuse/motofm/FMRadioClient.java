@@ -5,28 +5,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.motorola.android.fmradio.IFMRadioService;
 import com.motorola.android.fmradio.IFMRadioServiceCallback;
 
-public class FMRadioClient {
+public class FMRadioClient implements TransactionSearchListener{
     private static final String TAG = "MotoFMClient";
     
     private Context mContext;
+    private Handler mHandler = new Handler();
     private IFMRadioService mService;
     private IFMRadioServiceCallback mCallback;
 
     private ServiceConnection fmRemoteCon;
     private boolean mIsConnected = false;
     private IFMRadioListener mListener;
+    private istesting = false;
     
     public FMRadioClient(Context context) {
         mContext = context;
         mCallback = new IFMRadioServiceCallback.Stub() {
             @Override
             public void onCommandComplete(int cmd, int status, String value) {
+		if(istesting){
+		    return;
+		}
 	    	Log.d(TAG, "FM Service Command Complete: ");
 	    	Log.d(TAG, "cmd: " + cmd);
 	    	Log.d(TAG, "status: " + status);
@@ -79,15 +85,7 @@ public class FMRadioClient {
         boolean enabled = mService.enable(FMConstants.FMRADIO_BAND_US_EUROPE); // US/EU band
         Log.d(TAG, "启用结果: " + enabled);	
 
-	boolean isOn = mService.isFmOn();
-        Log.d(TAG, "FM开启状态: " + isOn);
-
-        Log.d(TAG, "配置音频输出...");
-        mService.setFMRouting(FMConstants.FMRADIO_ROUTING_SPEAKER); // 扬声器
-        mService.setVolume(10);   // 中等音量
-        mService.setMute(FMConstants.FMRADIO_MUTE_NOT);      // 取消静音 - 关键！
 	return true;
-        
       } catch (Exception e) {
         Log.e(TAG, "启动FM异常: " + e.getMessage());
         e.printStackTrace();
@@ -109,97 +107,36 @@ public class FMRadioClient {
       }
     }
 
-    public void testAudioOutput() {
-    try {
-        Log.d(TAG, "=== 专门测试音频输出 ===");
-
-        // 1. 测试扬声器支持
-        boolean speakerSupported = mService.isSpeakerSupported();
-        Log.d(TAG, "扬声器支持: " + speakerSupported);
-
-        // 2. 强制设置音频路由到扬声器
-        Log.d(TAG, "设置音频路由到扬声器...");
-        mService.setFMRouting(FMConstants.FMRADIO_ROUTING_SPEAKER);
-        Thread.sleep(200);
-
-        // 3. 多次取消静音
-        Log.d(TAG, "取消静音...");
-        for (int i = 0; i < 5; i++) {
-            mService.setMute(FMConstants.FMRADIO_MUTE_NOT);
-            Thread.sleep(50);
-        }
-
-        // 4. 设置较大音量
-        Log.d(TAG, "设置音量为15...");
-        mService.setVolume(15); // 最大音量
-        Thread.sleep(200);
-
-        // 5. 检查当前状态
-        boolean isMute = mService.isMute();
-        int audioMode = mService.getAudioMode();
-        boolean hasVolume = mService.getVolume();
-
-        Log.d(TAG, "最终音频状态:");
-        Log.d(TAG, "  静音: " + isMute);
-        Log.d(TAG, "  音频模式: " + audioMode);
-        Log.d(TAG, "  音量状态: " + hasVolume);
-
-        // 6. 如果还静音，尝试不同的取消静音方式
-        if (isMute) {
-            Log.w(TAG, "检测到仍然静音，尝试强制取消...");
-            mService.setMute(0); // 直接使用0
-            mService.setMute(FMConstants.FMRADIO_MUTE_NOT);
-        }
-
-        Log.d(TAG, "=== 音频测试完成 ===");
-
-    } catch (Exception e) {
-        Log.e(TAG, "音频测试失败", e);
-    }
-}
-
     public void debugFMState() {
     try {
         Log.d(TAG, "=== FM状态调试 ===");
+        mService.tune(102600);
+    	    Log.d(TAG, "调频102600");
+    	    Log.d(TAG, "激发 FM_CMD_TUNE_COMPLETE = 0");
 
-        // 检查FM是否开启
-        boolean isFmOn = mService.isFmOn();
-        Log.d(TAG, "FM是否开启: " + isFmOn);
+	mHandler.postDelayed(() -> {
+    	    Log.d(TAG, "1秒到了");
+    	    Log.d(TAG, "check getCurrentFreq() 应激发 FM_CMD_GET_FREQ_DONE = 12");
+	    mService.getCurrentFreq();
+        }, 1000);
 
-        // 检查静音状态
-        boolean isMute = mService.isMute();
-        Log.d(TAG, "是否静音: " + isMute);
+	mHandler.postDelayed(() -> {
+    	    Log.d(TAG, "2秒到了");
+    	    Log.d(TAG, "check scan() 应激发 FM_CMD_SCANNING = 25 ");
+	    mService.scan();
+        }, 2000);
 
-        // 检查当前频率
-        boolean hasFreq = mService.getCurrentFreq();
-        Log.d(TAG, "是否有当前频率: " + hasFreq);
+	mHandler.postDelayed(() -> {
+    	    Log.d(TAG, "7秒到了");
+    	    Log.d(TAG, "getAudioType() 应激发 FM_CMD_GET_AUDIOTYPE_DONE = 11");
+	    mService.getAudioType();
+        }, 7000);
 
-        // 检查音量
-        boolean hasVolume = mService.getVolume();
-        Log.d(TAG, "是否有音量: " + hasVolume);
-
-        // 检查音频模式
-        int audioMode = mService.getAudioMode();
-        Log.d(TAG, "音频模式: " + audioMode +
-              " (0=单声道, 1=立体声)");
-
-        // 检查音频类型
-        boolean audioType = mService.getAudioType();
-        Log.d(TAG, "音频类型: " + audioType);
-
-        // 检查RSSI信号强度
-        boolean hasRssi = mService.getRSSI();
-        Log.d(TAG, "是否有RSSI: " + hasRssi);
-
-	String stationName = mService.getRDSStationName();
-        String rdsPS = mService.getRdsPS();
-        String rdsRT = mService.getRdsRT();
-        String rdsRTPLUS = mService.getRdsRTPLUS();
-
-        Log.d(TAG, "RDS Station Name: '" + stationName + "'");
-        Log.d(TAG, "RDS PS: '" + rdsPS + "'");
-        Log.d(TAG, "RDS RT: '" + rdsRT + "'");
-        Log.d(TAG, "RDS RT+: '" + rdsRTPLUS + "'");
+	mHandler.postDelayed(() -> {
+    	    Log.d(TAG, "8秒到了");
+    	    Log.d(TAG, "getAudioMode() 应激发 FM_CMD_SET_AUDIOMODE_DONE = 17");
+	    mService.getAudioType();
+        }, 8000);
 
         Log.d(TAG, "=== 调试结束 ===");
 
@@ -236,5 +173,29 @@ public class FMRadioClient {
                 e.printStackTrace();
 		return false;
 	}
+    }
+
+
+    @Override
+    public void onDiscoveryStart() {
+        Log.d(TAG, "开始发现事务ID");
+        mDiscovering = true;
+    }
+
+    @Override
+    public void onTransactionFound(int transactionId, int cmd) {
+        Log.d(TAG, "发现事务ID " + transactionId + " 对应命令 " + cmd);
+        // 可以在这里记录或处理发现的映射
+    }
+
+    @Override
+    public void onDiscoveryEnd() {
+        Log.d(TAG, "事务ID发现结束");
+        mDiscovering = false;
+
+        // 打印最终映射表
+        if (mTransactionFinder != null) {
+            mTransactionFinder.printTransactionMap();
+        }
     }
 }

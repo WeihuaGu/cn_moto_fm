@@ -1,0 +1,12 @@
+ransactionFinder: === 事务ID到命令映射表 ===
+10-30 19:55:51.454  4814  4857 D TransactionFinder: 事务ID 3 -> 命令 17
+10-30 19:55:51.454  4814  4857 D TransactionFinder: 事务ID 35 -> 命令 9
+10-30 19:55:51.454  4814  4857 D TransactionFinder: 事务ID 20 -> 命令 21
+10-30 19:55:51.454  4814  4857 D TransactionFinder: 事务ID 36 -> 命令 10
+10-30 19:55:51.454  4814  4857 D TransactionFinder: 事务ID 21 -> 命令 21
+10-30 19:55:51.454  4814  4857 D TransactionFinder: 事务ID 37 -> 命令 18
+10-30 19:55:51.455  4814  4857 D TransactionFinder: 事务ID 7 -> 命令 1
+10-30 19:55:51.455  4814  4857 D TransactionFinder: 事务ID 23 -> 命令 16
+10-30 19:55:51.455  4814  4857 D TransactionFinder: 事务ID 9 -> 命令 3
+10-30 19:55:51.455  4814  4857 D TransactionFinder: 事务ID 12 -> 命令 25
+

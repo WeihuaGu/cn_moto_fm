@@ -85,7 +85,7 @@ public class TransactionFinder {
         transactionToParamType.put(33, ParamType.NO_PARAM);     // getFMStreamType()
         transactionToParamType.put(35, ParamType.NO_PARAM);     // disable()
         transactionToParamType.put(36, ParamType.NO_PARAM);     // isFmOn()
-        transactionToParamType.put(37, ParamType.FOUR_INTS);    // setCustomBand(int minFreq, int maxFreq, int defaultFreq, int step)
+        transactionToParamType.put(37, ParamType.INT_PARAM);    // setCustomBand(int minFreq, int maxFreq, int defaultFreq, int step)
         transactionToParamType.put(38, ParamType.NO_PARAM);     // isCustomBandSupported()
         transactionToParamType.put(39, ParamType.NO_PARAM);     // recordingAudioOnPrepare()
         transactionToParamType.put(40, ParamType.NO_PARAM);     // recordingAudioOffPrepare()
@@ -93,11 +93,18 @@ public class TransactionFinder {
     private void initKnownTransactions() {
         // 添加已知正确的事务ID
         knownTransactions.add(0);   // tune
+        knownTransactions.add(1);   // getCurrentFreq
+        knownTransactions.add(2);   // getCurrentFreq
+        knownTransactions.add(6);   // getCurrentFreq
+        knownTransactions.add(8);   // getCurrentFreq
         knownTransactions.add(10);  // setVolume
+        knownTransactions.add(11);  // setVolume
         knownTransactions.add(13);  // getBand
         knownTransactions.add(14);  // getMinFrequence
         knownTransactions.add(15);  // getMaxFrequence
         knownTransactions.add(16);  // getStepUnit
+        //knownTransactions.add(17);  
+        //knownTransactions.add(22);  
         knownTransactions.add(34);  // enable
 				    
         initParamTypeMapping();
@@ -163,7 +170,7 @@ public class TransactionFinder {
                                 // 记录当前测试事务ID对应的命令
                                 transactionToCmdMap.put(currentTestingTrans, cmd);
                                 knownTransactions.add(currentTestingTrans);
-                                Log.d(TAG, "发现事务ID " + currentTestingTrans + " -> 命令 " + cmd);
+                                Log.d(TAG, "发现事务ID-1,N " + (currentTestingTrans-1) + " -> 命令 " + cmd);
                                 // 通知找到映射
                                 if (mListener != null) {
                                     mListener.onTransactionFound(currentTestingTrans, cmd);

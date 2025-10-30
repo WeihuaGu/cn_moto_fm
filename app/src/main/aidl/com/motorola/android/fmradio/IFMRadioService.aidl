@@ -4,19 +4,19 @@ import com.motorola.android.fmradio.IFMRadioServiceCallback;
 
 interface IFMRadioService {
     boolean tune(int freq)=0;                    // ok FM_CMD_TUNE_COMPLETE = 0
-    boolean getCurrentFreq()=1;                  // TRANSACTION_getCurrentFreq = 0x2 -> 1
-    boolean setAudioMode(int mode)=2;            // x
-    int getAudioMode()=3;                        // TRANSACTION_getAudioMode = 0x4 -> 3
-    boolean setMute(int mode)=4;                 // x
-    boolean scan()=5;                            // maybe
-    boolean seek(int direction)=6;               // TRANSACTION_seek = 0x7 -> 6
+    boolean getCurrentFreq()=1;                  // ok FM_CMD_GET_FREQ_DONE = 12
+    boolean setAudioMode(int mode)=2;            // ok may
+    int getAudioMode()=3;                        // x
+    int getBand()=4;                            // TRANSACTION_getBand = 0xd -> 12
+    boolean setBand(int band)=5;                // TRANSACTION_setBand = 0xe -> 13
+    boolean seek(int direction)=6;               // ok may FM_CMD_SEEK_COMPLETE = 1
     boolean isMute()=7;                          // TRANSACTION_isMute = 0x6 -> 5
-    boolean stopSeek()=8;                        // TRANSACTION_stopSeek = 0x9 -> 8
-    boolean stopScan()=9;                        // TRANSACTION_stopScan = 0xa -> 9
+    boolean setAbort()=8;                         // ok may FM_CMD_ABORT_COMPLETE = 3
+    boolean getVolume()=9;                      // TRANSACTION_getVolume = 0xc -> 11
     boolean setVolume(int volume)=10;            // ok FM_CMD_SET_VOLUME_DONE = 22
-    boolean getVolume()=11;                      // TRANSACTION_getVolume = 0xc -> 11
-    int getBand()=12;                            // TRANSACTION_getBand = 0xd -> 12
-    boolean setBand(int band)=13;                // TRANSACTION_setBand = 0xe -> 13
+    boolean scan()=11;                           // ok may FM_CMD_SCANNING = 25
+    boolean stopScan()=12;                        // TRANSACTION_stopScan = 0xa -> 9
+    boolean stopSeek()=13;                        // x
     int getMinFrequence()=14;                    // ok 
     int getMaxFrequence()=15;                    // ok
     int getStepUnit()=16;                        // ok
@@ -24,8 +24,8 @@ interface IFMRadioService {
     void unregisterCallback(IFMRadioServiceCallback cb)=18; // TRANSACTION_unregisterCallback = 0x13 -> 18
     boolean setRdsEnable(boolean flag, int mode)=19; // TRANSACTION_setRdsEnable = 0x14 -> 19
     boolean isRdsEnable()=20;                    // TRANSACTION_isRdsEnable = 0x15 -> 20
-    boolean getAudioType()=21;                   // TRANSACTION_getAudioType = 0x16 -> 21
-    boolean getRSSI()=22;                        // TRANSACTION_getRSSI = 0x17 -> 22
+    boolean getAudioType()=21;                   // x
+    boolean getRSSI()=22;                        // ok may FM_CMD_GET_RSSI_DONE = 16
     String getRdsPS()=23;                        // TRANSACTION_getRdsPS = 0x18 -> 23
     String getRdsRT()=24;                        // TRANSACTION_getRdsRT = 0x19 -> 24
     String getRdsRTPLUS()=25;                    // TRANSACTION_getRdsRTPLUS = 0x1a -> 25
@@ -38,10 +38,11 @@ interface IFMRadioService {
     boolean isSpeakerSupported()=32;             // TRANSACTION_isSpeakerSupported = 0x21 -> 32
     int getFMStreamType()=33;                    // TRANSACTION_getFMStreamType = 0x22 -> 33
     boolean enable(int band)=34;                 // ok FM_CMD_ENABLE_COMPLETE = 9
-    boolean disable()=35;                        // TRANSACTION_disable = 0x24 -> 35
-    boolean isFmOn()=36;                         // x
+    boolean disable()=35;                        // ok may FM_CMD_DISABLE_COMPLETE = 10
+    boolean setMute(int mode)=36;                 // ok may FM_CMD_SET_AUDIOMUTE_DONE = 18
     boolean setCustomBand(int minFreq, int maxFreq, int defaultFreq, int step)=37; // TRANSACTION_setCustomBand = 0x26 -> 37
     boolean isCustomBandSupported()=38;          // TRANSACTION_isCustomBandSupported = 0x27 -> 38
     void recordingAudioOnPrepare()=39;           // TRANSACTION_recordingAudioOnPrepare = 0x28 -> 39
     void recordingAudioOffPrepare()=40;          // TRANSACTION_recordingAudioOffPrepare = 0x29 -> 40
+    boolean isFmOn()=41;                         // x
 }

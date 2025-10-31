@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.Parcel;
+import android.media.AudioManager;
 import android.util.Log;
 
 import com.motorola.android.fmradio.IFMRadioService;
@@ -140,7 +141,7 @@ public class FMRadioClient implements TransactionSearchListener{
     }
 
     public boolean TRANSACTION_setMute(int mode){
-	return sendTr_1(37,mode);
+	return sendTr_1(8,mode);
     }
 
     public boolean TRANSACTION_setAudioMode(int mode){
@@ -168,18 +169,17 @@ public class FMRadioClient implements TransactionSearchListener{
       try {
         boolean enabled = mService.enable(FMConstants.FMRADIO_BAND_US_EUROPE); // US/EU band
         Log.d(TAG, "启用结果: " + enabled);	
-        TRANSACTION_setAudioMode(FMConstants.FMRADIO_AUDIO_MODE_STEREO);
-        boolean setmuteflag = TRANSACTION_setMute(FMConstants.FMRADIO_MUTE_AUDIO);
-        Log.d(TAG, "setmute: " + setmuteflag);	
+
+        checkAudioIssues();
+        mService.setAudioMode(FMConstants.FMRADIO_AUDIO_MODE_STEREO);
+        mService.setMute(0);
 	mService.setVolume(9);
-        TRANSACTION_scan();
+
 	/**
         Log.d(TAG, "遍历查找: ");	
 	finder = new TransactionFinder(mBinder,this);
-	finder.startDiscovery(0, 40);
+	finder.startDiscovery(1, 42);
 	**/
-
-
 	return true;
       } catch (Exception e) {
         Log.e(TAG, "启动FM异常: " + e.getMessage());
@@ -202,6 +202,43 @@ public class FMRadioClient implements TransactionSearchListener{
       }
     }
 
+    /**
+ * 检查音频相关状态
+ */
+public void checkAudioIssues() {
+    try {
+        Log.d(TAG, "=== 检查音频问题 ===");
+        
+        // 1. 通过AudioManager检查系统音频状态
+	//mContext
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        
+        // 检查媒体音量
+        int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        Log.d(TAG, "系统媒体音量: " + currentVolume + "/" + maxVolume);
+        
+        // 检查是否静音
+        boolean isMusicMuted = audioManager.isStreamMute(AudioManager.STREAM_MUSIC);
+        Log.d(TAG, "系统媒体静音: " + isMusicMuted);
+        
+        // 2. 请求音频焦点
+        int focusResult = audioManager.requestAudioFocus(
+            new AudioManager.OnAudioFocusChangeListener() {
+                @Override
+                public void onAudioFocusChange(int focusChange) {
+                    Log.d(TAG, "音频焦点变化: " + focusChange);
+                }
+            },
+            AudioManager.STREAM_MUSIC,
+            AudioManager.AUDIOFOCUS_GAIN
+        );
+        Log.d(TAG, "音频焦点请求结果: " + focusResult);
+        
+    } catch (Exception e) {
+        Log.e(TAG, "检查音频问题失败", e);
+    }
+}
     public void debugFMState() {
     try {
         Log.d(TAG, "=== FM状态调试 ===");

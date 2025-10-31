@@ -1,0 +1,133 @@
+-31 13:59:45.570 15072 15115 D TransactionFinder: 开始发现事务ID (范围: 1-42)
+10-31 13:59:45.571 15072 15115 D TransactionFinder: 跳过已知事务ID: 1
+10-31 13:59:45.571 15072 15115 D TransactionFinder: 跳过已知事务ID: 2
+10-31 13:59:45.571 15072 15115 D TransactionFinder: 跳过已知事务ID: 3
+10-31 13:59:45.571 15072 15115 D TransactionFinder: 测试事务ID: 4
+10-31 13:59:45.750 15072 15115 D TransactionFinder: 事务 4 返回数据 - 总大小: 8, 可用: 4
+10-31 13:59:45.750 15072 15115 D TransactionFinder: 事务 4 返回boolean: false, 剩余数据: 0
+10-31 13:59:45.750 15072 15115 D TransactionFinder: ✅ 事务 4 确定为boolean返回类型
+10-31 13:59:45.750 15072 15102 D TransactionFinder: 发现事务ID-1,N 3 -> 命令 9
+10-31 13:59:45.751 15072 15115 D TransactionFinder: 测试事务ID: 5
+10-31 13:59:45.751 15072 15115 D TransactionFinder: 事务 5 返回数据 - 总大小: 8, 可用: 4
+10-31 13:59:45.751 15072 15115 D TransactionFinder: 事务 5 返回boolean: true, 剩余数据: 0
+10-31 13:59:45.751 15072 15115 D TransactionFinder: ✅ 事务 5 确定为boolean返回类型
+10-31 13:59:50.752 15072 15115 D TransactionFinder: 事务ID 5 无回调
+10-31 13:59:50.753 15072 15115 D TransactionFinder: 测试事务ID: 6
+10-31 13:59:50.754 15072 15115 D TransactionFinder: 事务 6 返回数据 - 总大小: 8, 可用: 4
+10-31 13:59:50.754 15072 15115 D TransactionFinder: 事务 6 返回boolean: true, 剩余数据: 0
+10-31 13:59:50.754 15072 15115 D TransactionFinder: ✅ 事务 6 确定为boolean返回类型
+10-31 13:59:55.755 15072 15115 D TransactionFinder: 事务ID 6 无回调
+10-31 13:59:55.756 15072 15115 D TransactionFinder: 跳过已知事务ID: 7
+10-31 13:59:55.756 15072 15115 D TransactionFinder: 测试事务ID: 8
+10-31 13:59:55.757 15072 15115 D TransactionFinder: 事务 8 返回数据 - 总大小: 8, 可用: 4
+10-31 13:59:55.757 15072 15115 D TransactionFinder: 事务 8 返回boolean: true, 剩余数据: 0
+10-31 13:59:55.757 15072 15115 D TransactionFinder: ✅ 事务 8 确定为boolean返回类型
+10-31 13:59:59.751 15072 15102 D TransactionFinder: 发现事务ID-1,N 7 -> 命令 18
+10-31 13:59:59.751 15072 15102 D TransactionFinder: setMute Command: 
+10-31 13:59:59.751 15072 15102 D TransactionFinder: cmd: 18
+10-31 13:59:59.751 15072 15102 D TransactionFinder: arg: 0
+10-31 13:59:59.751 15072 15102 D TransactionFinder: value result: 0
+10-31 13:59:59.752 15072 15115 D TransactionFinder: 跳过已知事务ID: 9
+10-31 13:59:59.752 15072 15115 D TransactionFinder: 跳过已知事务ID: 10
+10-31 13:59:59.752 15072 15115 D TransactionFinder: 跳过已知事务ID: 11
+10-31 13:59:59.752 15072 15115 D TransactionFinder: 跳过已知事务ID: 12
+10-31 13:59:59.752 15072 15115 D TransactionFinder: 测试事务ID: 13
+10-31 13:59:59.753 15072 15115 D TransactionFinder: 事务 13 返回数据 - 总大小: 8, 可用: 4
+10-31 13:59:59.753 15072 15115 D TransactionFinder: 事务 13 返回boolean: false, 剩余数据: 0
+10-31 13:59:59.753 15072 15115 D TransactionFinder: ✅ 事务 13 确定为boolean返回类型
+10-31 13:59:59.754 15072 15102 D TransactionFinder: 发现事务ID-1,N 12 -> 命令 18
+10-31 13:59:59.754 15072 15102 D TransactionFinder: setMute Command: 
+10-31 13:59:59.754 15072 15102 D TransactionFinder: cmd: 18
+10-31 13:59:59.754 15072 15102 D TransactionFinder: arg: 0
+10-31 13:59:59.754 15072 15102 D TransactionFinder: value result: 0
+10-31 13:59:59.754 15072 15115 D TransactionFinder: 跳过已知事务ID: 14
+10-31 13:59:59.754 15072 15115 D TransactionFinder: 跳过已知事务ID: 15
+10-31 13:59:59.754 15072 15115 D TransactionFinder: 跳过已知事务ID: 16
+10-31 13:59:59.754 15072 15115 D TransactionFinder: 跳过已知事务ID: 17
+10-31 13:59:59.754 15072 15115 D TransactionFinder: 跳过已知事务ID: 18
+10-31 13:59:59.755 15072 15115 D TransactionFinder: 测试事务ID: 19
+10-31 13:59:59.756 15072 15115 D TransactionFinder: 事务 19 异常: Parcel data not fully consumed, unread size: 4
+10-31 14:00:04.757 15072 15115 D TransactionFinder: 事务ID 19 无回调
+10-31 14:00:04.757 15072 15115 D TransactionFinder: 跳过已知事务ID: 20
+10-31 14:00:04.757 15072 15115 D TransactionFinder: 跳过已知事务ID: 21
+10-31 14:00:04.757 15072 15115 D TransactionFinder: 测试事务ID: 22
+10-31 14:00:04.758 15072 15115 D TransactionFinder: 事务 22 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:04.758 15072 15115 D TransactionFinder: 事务 22 返回boolean: true, 剩余数据: 0
+10-31 14:00:04.759 15072 15115 D TransactionFinder: ✅ 事务 22 确定为boolean返回类型
+10-31 14:00:09.759 15072 15115 D TransactionFinder: 事务ID 22 无回调
+10-31 14:00:09.759 15072 15115 D TransactionFinder: 跳过已知事务ID: 23
+10-31 14:00:09.759 15072 15115 D TransactionFinder: 跳过已知事务ID: 24
+10-31 14:00:09.760 15072 15115 D TransactionFinder: 跳过已知事务ID: 25
+10-31 14:00:09.760 15072 15115 D TransactionFinder: 跳过已知事务ID: 26
+10-31 14:00:09.760 15072 15115 D TransactionFinder: 测试事务ID: 27
+10-31 14:00:09.761 15072 15115 D TransactionFinder: 事务 27 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:09.761 15072 15115 D TransactionFinder: 事务 27 返回boolean: false, 剩余数据: 0
+10-31 14:00:09.761 15072 15115 D TransactionFinder: ✅ 事务 27 确定为boolean返回类型
+10-31 14:00:14.762 15072 15115 D TransactionFinder: 事务ID 27 无回调
+10-31 14:00:14.762 15072 15115 D TransactionFinder: 测试事务ID: 28
+10-31 14:00:14.764 15072 15115 D TransactionFinder: 事务 28 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:14.764 15072 15115 D TransactionFinder: 事务 28 返回boolean: false, 剩余数据: 0
+10-31 14:00:14.764 15072 15115 D TransactionFinder: ✅ 事务 28 确定为boolean返回类型
+10-31 14:00:19.766 15072 15115 D TransactionFinder: 事务ID 28 无回调
+10-31 14:00:19.766 15072 15115 D TransactionFinder: 测试事务ID: 29
+10-31 14:00:19.768 15072 15115 D TransactionFinder: 事务 29 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:19.768 15072 15115 D TransactionFinder: 事务 29 返回boolean: false, 剩余数据: 0
+10-31 14:00:19.768 15072 15115 D TransactionFinder: ✅ 事务 29 确定为boolean返回类型
+10-31 14:00:24.768 15072 15115 D TransactionFinder: 事务ID 29 无回调
+10-31 14:00:24.769 15072 15115 D TransactionFinder: 跳过已知事务ID: 30
+10-31 14:00:24.769 15072 15115 D TransactionFinder: 测试事务ID: 31
+10-31 14:00:24.771 15072 15115 D TransactionFinder: 事务 31 异常: Attempt to invoke virtual method 'void java.lang.Thread.interrupt()' on a null object reference
+10-31 14:00:29.772 15072 15115 D TransactionFinder: 事务ID 31 无回调
+10-31 14:00:29.772 15072 15115 D TransactionFinder: 测试事务ID: 32
+10-31 14:00:29.811 15072 15115 D TransactionFinder: 事务 32 返回数据 - 总大小: 4, 可用: 0
+10-31 14:00:29.812 15072 15115 D TransactionFinder: 事务 32: void方法或无返回值
+10-31 14:00:34.812 15072 15115 D TransactionFinder: 事务ID 32 无回调
+10-31 14:00:34.813 15072 15115 D TransactionFinder: 测试事务ID: 33
+10-31 14:00:34.814 15072 15115 D TransactionFinder: 事务 33 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:34.814 15072 15115 D TransactionFinder: 事务 33 返回boolean: true, 剩余数据: 0
+10-31 14:00:34.814 15072 15115 D TransactionFinder: ✅ 事务 33 确定为boolean返回类型
+10-31 14:00:39.815 15072 15115 D TransactionFinder: 事务ID 33 无回调
+10-31 14:00:39.815 15072 15115 D TransactionFinder: 测试事务ID: 34
+10-31 14:00:39.816 15072 15115 D TransactionFinder: 事务 34 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:39.816 15072 15115 D TransactionFinder: 事务 34 返回boolean: true, 剩余数据: 0
+10-31 14:00:39.816 15072 15115 D TransactionFinder: ✅ 事务 34 确定为boolean返回类型
+10-31 14:00:44.818 15072 15115 D TransactionFinder: 事务ID 34 无回调
+10-31 14:00:44.818 15072 15115 D TransactionFinder: 跳过已知事务ID: 35
+10-31 14:00:44.818 15072 15115 D TransactionFinder: 跳过已知事务ID: 36
+10-31 14:00:44.818 15072 15115 D TransactionFinder: 测试事务ID: 37
+10-31 14:00:44.821 15072 15115 D TransactionFinder: 事务 37 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:44.821 15072 15115 D TransactionFinder: 事务 37 返回boolean: true, 剩余数据: 0
+10-31 14:00:44.821 15072 15115 D TransactionFinder: ✅ 事务 37 确定为boolean返回类型
+10-31 14:00:49.821 15072 15115 D TransactionFinder: 事务ID 37 无回调
+10-31 14:00:49.822 15072 15115 D TransactionFinder: 测试事务ID: 38
+10-31 14:00:49.824 15072 15115 D TransactionFinder: 事务 38 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:49.824 15072 15115 D TransactionFinder: 事务 38 返回boolean: false, 剩余数据: 0
+10-31 14:00:49.824 15072 15115 D TransactionFinder: ✅ 事务 38 确定为boolean返回类型
+10-31 14:00:54.825 15072 15115 D TransactionFinder: 事务ID 38 无回调
+10-31 14:00:54.825 15072 15115 D TransactionFinder: 测试事务ID: 39
+10-31 14:00:54.828 15072 15115 D TransactionFinder: 事务 39 返回数据 - 总大小: 8, 可用: 4
+10-31 14:00:54.828 15072 15115 D TransactionFinder: 事务 39 返回boolean: true, 剩余数据: 0
+10-31 14:00:54.828 15072 15115 D TransactionFinder: ✅ 事务 39 确定为boolean返回类型
+10-31 14:00:59.829 15072 15115 D TransactionFinder: 事务ID 39 无回调
+10-31 14:00:59.829 15072 15115 D TransactionFinder: 测试事务ID: 40
+10-31 14:00:59.831 15072 15115 D TransactionFinder: 事务 40 返回数据 - 总大小: 4, 可用: 0
+10-31 14:00:59.831 15072 15115 D TransactionFinder: 事务 40: void方法或无返回值
+10-31 14:01:04.832 15072 15115 D TransactionFinder: 事务ID 40 无回调
+10-31 14:01:04.832 15072 15115 D TransactionFinder: 测试事务ID: 41
+10-31 14:01:04.833 15072 15115 D TransactionFinder: 事务 41 返回数据 - 总大小: 4, 可用: 0
+10-31 14:01:04.833 15072 15115 D TransactionFinder: 事务 41: void方法或无返回值
+10-31 14:01:09.834 15072 15115 D TransactionFinder: 事务ID 41 无回调
+10-31 14:01:09.834 15072 15115 D TransactionFinder: 测试事务ID: 42
+10-31 14:01:09.835 15072 15115 D TransactionFinder: 事务 42 返回数据 - 总大小: 0, 可用: 0
+10-31 14:01:09.835 15072 15115 D TransactionFinder: 事务 42: void方法或无返回值
+10-31 14:01:14.836 15072 15115 D TransactionFinder: 事务ID 42 无回调
+10-31 14:01:14.838 15072 15115 D TransactionFinder: === 事务ID到命令映射表 ===
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID 4 -> 命令 9
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID 8 -> 命令 18
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID 13 -> 命令 18
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID发现完成
+10-31 14:01:14.838 15072 15115 D TransactionFinder: === 事务ID到命令映射表 ===
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID 4 -> 命令 9
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID 8 -> 命令 18
+10-31 14:01:14.838 15072 15115 D TransactionFinder: 事务ID 13 -> 命令 18
+

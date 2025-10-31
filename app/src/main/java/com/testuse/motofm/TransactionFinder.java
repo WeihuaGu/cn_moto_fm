@@ -34,6 +34,7 @@ public class TransactionFinder {
         FOUR_INTS      // 四个int参数 (setCustomBand)
     }
     
+    private final Object prelock = new Object();
     private final Object lock = new Object();
     
     public TransactionFinder(IBinder binder, TransactionSearchListener listener) {
@@ -92,20 +93,29 @@ public class TransactionFinder {
     }
     private void initKnownTransactions() {
         // 添加已知正确的事务ID
-        knownTransactions.add(0);   // tune
-        knownTransactions.add(1);   // getCurrentFreq
+        knownTransactions.add(1);   // tune
         knownTransactions.add(2);   // getCurrentFreq
-        knownTransactions.add(6);   // getCurrentFreq
-        knownTransactions.add(8);   // getCurrentFreq
-        knownTransactions.add(10);  // setVolume
+        knownTransactions.add(3);   // setAudioMode
+        knownTransactions.add(7);   // seek(int direction)
+        knownTransactions.add(8);   // boolean setMute(int mode)
+        knownTransactions.add(9);   // boolean setAbort()
+        //knownTransactions.add(10);  // boolean setAbort()
         knownTransactions.add(11);  // setVolume
-        knownTransactions.add(13);  // getBand
-        knownTransactions.add(14);  // getMinFrequence
-        knownTransactions.add(15);  // getMaxFrequence
-        knownTransactions.add(16);  // getStepUnit
-        //knownTransactions.add(17);  
-        //knownTransactions.add(22);  
-        knownTransactions.add(34);  // enable
+        knownTransactions.add(12);  // scan()
+        knownTransactions.add(14);  // boolean setBand(int band)
+        knownTransactions.add(15);  //int getMinFrequence
+        knownTransactions.add(16);  //int getMaxFrequence() 
+        knownTransactions.add(17);  // int getStepUnit() 
+        knownTransactions.add(18);  // void registerCallback 
+        knownTransactions.add(20);  
+        knownTransactions.add(21);  
+        knownTransactions.add(23);  //  boolean getRSSI()
+        knownTransactions.add(24);  //  string
+        knownTransactions.add(25);  //  string
+        knownTransactions.add(26);  //  string
+        knownTransactions.add(30);  //  string
+        knownTransactions.add(35);  //  boolean enable(int band)
+        knownTransactions.add(36);  //  boolean disable()
 				    
         initParamTypeMapping();
     }
@@ -116,7 +126,8 @@ public class TransactionFinder {
         try {
             data.writeInterfaceToken("com.motorola.android.fmradio.IFMRadioService");
             // 根据参数类型写入参数
-            ParamType paramType = transactionToParamType.get(transactionId);
+            //ParamType paramType = transactionToParamType.get(transactionId);
+            ParamType paramType =  ParamType.NO_PARAM;
             if (paramType == null) {
                 // 未知参数类型，使用默认int参数
                 data.writeInt(0);
@@ -142,7 +153,75 @@ public class TransactionFinder {
             }
             mBinder.transact(transactionId, data, reply, 0);
             reply.readException();
-            return reply.readInt() != 0;
+	    
+	    int dataSize = reply.dataSize();
+        int dataAvail = reply.dataAvail();
+        Log.d(TAG, "事务 " + transactionId + " 返回数据 - 总大小: " + dataSize + ", 可用: " + dataAvail);
+
+        if (dataSize == 0 || dataAvail == 0) {
+            Log.d(TAG, "事务 " + transactionId + ": void方法或无返回值");
+            return true;
+        }
+
+        // 保存当前位置
+        int originalPosition = reply.dataPosition();
+
+        // 尝试1: boolean类型
+        try {
+            reply.setDataPosition(originalPosition);
+            boolean boolResult = reply.readInt() != 0;
+            int remaining = reply.dataAvail();
+            Log.d(TAG, "事务 " + transactionId + " 返回boolean: " + boolResult + ", 剩余数据: " + remaining);
+            if (remaining == 0) {
+                Log.d(TAG, "✅ 事务 " + transactionId + " 确定为boolean返回类型");
+                return boolResult;
+            }
+        } catch (Exception e) {
+            // 继续尝试其他类型
+        }
+
+        // 尝试2: String类型
+        try {
+            reply.setDataPosition(originalPosition);
+            String stringResult = reply.readString();
+            int remaining = reply.dataAvail();
+            Log.d(TAG, "事务 " + transactionId + " 返回String: '" + stringResult + "', 剩余数据: " + remaining);
+            if (remaining == 0) {
+                Log.d(TAG, "✅ 事务 " + transactionId + " 确定为String返回类型");
+                return true;
+            }
+        } catch (Exception e) {
+            // 继续尝试其他类型
+        }
+
+        // 尝试3: int类型
+        try {
+            reply.setDataPosition(originalPosition);
+            int intResult = reply.readInt();
+            int remaining = reply.dataAvail();
+            Log.d(TAG, "事务 " + transactionId + " 返回int: " + intResult + ", 剩余数据: " + remaining);
+            if (remaining == 0) {
+                Log.d(TAG, "✅ 事务 " + transactionId + " 确定为int返回类型");
+                return true;
+            }
+        } catch (Exception e) {
+            // 所有类型都失败了
+        }
+
+        // 如果所有类型都尝试失败，记录警告
+        Log.w(TAG, "⚠️ 事务 " + transactionId + " 无法确定返回类型，剩余数据: " + reply.dataAvail() + " 字节");
+
+        // 强制消费剩余数据避免Parcel异常
+        try {
+            reply.setDataPosition(originalPosition);
+            while (reply.dataAvail() > 0) {
+                reply.readInt();
+            }
+        } catch (Exception e) {
+            // 忽略清理过程中的异常
+        }
+
+            return false;
             
         } catch (Exception e) {
             Log.d(TAG, "事务 " + transactionId + " 异常: " + e.getMessage());
@@ -171,6 +250,12 @@ public class TransactionFinder {
                                 transactionToCmdMap.put(currentTestingTrans, cmd);
                                 knownTransactions.add(currentTestingTrans);
                                 Log.d(TAG, "发现事务ID-1,N " + (currentTestingTrans-1) + " -> 命令 " + cmd);
+				if(cmd == 18){
+					 Log.d(TAG, "setMute Command: ");
+                			 Log.d(TAG, "cmd: " + cmd);
+                			 Log.d(TAG, "arg: " + arg);
+                			 Log.d(TAG, "value result: " + data);
+				}
                                 // 通知找到映射
                                 if (mListener != null) {
                                     mListener.onTransactionFound(currentTestingTrans, cmd);
@@ -185,6 +270,9 @@ public class TransactionFinder {
 		mService.registerCallback(callback);
                 
                 // 遍历范围内所有未知事务ID
+                synchronized (prelock) {
+			prelock.wait(5000);
+		}
                 for (int trans = startTrans; trans <= endTrans; trans++) {
                     if (knownTransactions.contains(trans)) {
                         Log.d(TAG, "跳过已知事务ID: " + trans);
@@ -197,7 +285,7 @@ public class TransactionFinder {
                         // 使用抽离的sendTransaction方法
                         boolean result = sendTransaction(trans);
                         // 等待回调
-                        lock.wait(5000);
+                        lock.wait(7000);
                         
                         // 如果没有收到回调，标记为无回调事务
                         if (currentTestingTrans != -1) {

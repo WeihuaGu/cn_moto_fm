@@ -8,15 +8,15 @@ interface IFMRadioService {
     boolean setAudioMode(int mode)=2;            // ok may
     int getAudioMode()=3;                        // x
     int getBand()=4;                            // TRANSACTION_getBand = 0xd -> 12
-    boolean setBand(int band)=5;                // TRANSACTION_setBand = 0xe -> 13
+    boolean stopSeek()=5;                        // x
     boolean seek(int direction)=6;               // ok may FM_CMD_SEEK_COMPLETE = 1
-    boolean isMute()=7;                          // TRANSACTION_isMute = 0x6 -> 5
-    boolean setAbort()=8;                         // ok may FM_CMD_ABORT_COMPLETE = 3
-    boolean getVolume()=9;                      // TRANSACTION_getVolume = 0xc -> 11
+    boolean setMute(int mode)=7;                 // ok may FM_CMD_SET_AUDIOMUTE_DONE = 18
+    boolean setAbort()=8;                        // ok
+    boolean getVolume()=9;                       // x
     boolean setVolume(int volume)=10;            // ok FM_CMD_SET_VOLUME_DONE = 22
     boolean scan()=11;                           // ok may FM_CMD_SCANNING = 25
     boolean stopScan()=12;                        // TRANSACTION_stopScan = 0xa -> 9
-    boolean stopSeek()=13;                        // x
+    boolean setBand(int band)=13;                // ok FM_CMD_SET_BAND_DONE = 19
     int getMinFrequence()=14;                    // ok 
     int getMaxFrequence()=15;                    // ok
     int getStepUnit()=16;                        // ok
@@ -26,20 +26,20 @@ interface IFMRadioService {
     boolean isRdsEnable()=20;                    // TRANSACTION_isRdsEnable = 0x15 -> 20
     boolean getAudioType()=21;                   // x
     boolean getRSSI()=22;                        // ok may FM_CMD_GET_RSSI_DONE = 16
-    String getRdsPS()=23;                        // TRANSACTION_getRdsPS = 0x18 -> 23
-    String getRdsRT()=24;                        // TRANSACTION_getRdsRT = 0x19 -> 24
-    String getRdsRTPLUS()=25;                    // TRANSACTION_getRdsRTPLUS = 0x1a -> 25
+    String getRdsPS()=23;                        // ok
+    String getRdsRT()=24;                        // ok
+    String getRdsRTPLUS()=25;                    // ok
     int getRdsPI()=26;                           // TRANSACTION_getRdsPI = 0x1b -> 26
     int getRdsPTY()=27;                          // TRANSACTION_getRdsPTY = 0x1c -> 27
     boolean setRSSI(int rssi)=28;                // TRANSACTION_setRSSI = 0x1d -> 28
-    String getRDSStationName()=29;               // TRANSACTION_getRDSStationName = 0x1e -> 29
+    String getRDSStationName()=29;               // ok
     void notifyFMStatus(boolean status)=30;      // TRANSACTION_notifyFMStatus = 0x1f -> 30
     void setFMRouting(int routing)=31;           // TRANSACTION_setFMRouting = 0x20 -> 31
     boolean isSpeakerSupported()=32;             // TRANSACTION_isSpeakerSupported = 0x21 -> 32
     int getFMStreamType()=33;                    // TRANSACTION_getFMStreamType = 0x22 -> 33
     boolean enable(int band)=34;                 // ok FM_CMD_ENABLE_COMPLETE = 9
     boolean disable()=35;                        // ok may FM_CMD_DISABLE_COMPLETE = 10
-    boolean setMute(int mode)=36;                 // ok may FM_CMD_SET_AUDIOMUTE_DONE = 18
+    boolean isMute()=36;                          // TRANSACTION_isMute = 0x6 -> 5
     boolean setCustomBand(int minFreq, int maxFreq, int defaultFreq, int step)=37; // TRANSACTION_setCustomBand = 0x26 -> 37
     boolean isCustomBandSupported()=38;          // TRANSACTION_isCustomBandSupported = 0x27 -> 38
     void recordingAudioOnPrepare()=39;           // TRANSACTION_recordingAudioOnPrepare = 0x28 -> 39

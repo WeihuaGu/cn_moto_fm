@@ -20,40 +20,41 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 public class FMRadioHook implements IXposedHookLoadPackage {
     private static final String FM_DESCRIPTOR = "com.motorola.android.fmradio.IFMRadioService";
     private static final AtomicInteger logCount = new AtomicInteger(0);
+    private ClassLoader fmClassLoader = null; // 声明成员变量保存类加载器
+
     
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
-	if ("android".equals(lpparam.packageName)){
-        	hookViaSystemService();
+	if ("com.motorola.android.fmradio".equals(lpparam.packageName)){
+		fmClassLoader = lpparam.classLoader;
+		if(fmClassLoader!=null){
+                	XposedBridge.log("FM: 获取到FM应用的类加载器");
+			hookFmService();
+		}
 	}
     }
 
-    private void hookViaSystemService() {
-        XposedHelpers.findAndHookMethod(
-        	"com.android.server.am.ActiveServices",
-        	null,
-        	"bringUpServiceLocked",
-        	ComponentName.class, int.class, int.class, boolean.class,
-        	new XC_MethodHook() {
-            	  @Override
-            	  protected void beforeHookedMethod(MethodHookParam param) {
-                	ComponentName component = (ComponentName) param.args[0];
-                	// 使用 dumpsys 中确认的标识
-                	if ("com.motorola.android.fmradio".equals(component.getPackageName()) && ".FMRadioService".equals(component.getClassName())) {
-                    		XposedBridge.log("FM: 通过系统服务检测到 FM 服务");
-                    		// 获取正在启动的服务实例
-                    		Object serviceRecord = param.getResult();
-                    		IBinder binder = (IBinder) XposedHelpers.getObjectField(
-                        	serviceRecord, "binder"
-                    	        );
-
-                                if (binder != null) {
-                        		hookExecTransactForFmService(binder);
-                                }
+    private void hookFmService() {
+        try {
+            XposedHelpers.findAndHookMethod(
+                "com.motorola.android.fmradio.FMRadioService",
+                fmClassLoader,
+                "onBind",
+                Intent.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) {
+                        IBinder binder = (IBinder) param.getResult();
+                        if (binder != null) {
+                            XposedBridge.log("FM: 获取到 FM 服务 Binder");
+                            hookExecTransactForFmService(binder);
                         }
-                   }
+                    }
                 }
-        );
+            );
+        } catch (Throwable t) {
+            XposedBridge.log("FM: Hook 失败: " + t.getMessage());
+        }
     }
 
     private void hookExecTransactForFmService(final IBinder fmBinder) {
@@ -68,7 +69,6 @@ public class FMRadioHook implements IXposedHookLoadPackage {
             }
           }
         };
-
         XposedHelpers.findAndHookMethod(
         	"android.os.Binder",
         	null,
@@ -76,8 +76,6 @@ public class FMRadioHook implements IXposedHookLoadPackage {
         	int.class, long.class, long.class, int.class,
         	hook
     	);
-
-    	// 保存 hook 引用以便后续移除
      }
     
 }

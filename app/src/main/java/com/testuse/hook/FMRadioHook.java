@@ -1,6 +1,7 @@
 package com.testuse.hook;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.lang.reflect.Method;
 
 import android.os.IBinder;
 import android.os.Parcel;
@@ -64,7 +65,9 @@ public class FMRadioHook implements IXposedHookLoadPackage {
             // 仅当 thisObject 是我们的 FM Binder 时才处理
             if (param.thisObject == fmBinder) {
                 int code = (int) param.args[0];
-                XposedBridge.log("FM: 事务代码: " + code);
+		long dataObj = (long) param.args[1];
+		String params = dumpParams(dataObj);
+		XposedBridge.log(String.format("FM 事务,参数: %d | %s", code, params));
                 // 记录参数等...
             }
           }
@@ -73,9 +76,44 @@ public class FMRadioHook implements IXposedHookLoadPackage {
         	"android.os.Binder",
         	null,
         	"execTransact",
-        	int.class, long.class, long.class, int.class,
+		int.class, long.class, long.class, int.class,
         	hook
     	);
      }
+
+    private String dumpParams(long dataObj) {
+      Parcel data = null;
+      try {
+        // 正确指定参数类型为 long.class
+	data = (Parcel) XposedHelpers.callStaticMethod(
+    		Parcel.class, 
+    		"obtain", 
+    		new Class<?>[]{long.class},  // 参数类型数组
+    		dataObj                     // 参数值
+	);
+	XposedBridge.log(String.format(
+    		"DEBUG: size=%d, pos=%d, avail=%d",
+    		data.dataSize(),
+    		data.dataPosition(),
+    		data.dataAvail()
+	));
+        Parcel dataCopy = Parcel.obtain();
+        dataCopy.setDataPosition(0);
+        dataCopy.appendFrom(data, 0, data.dataSize());
+
+        StringBuilder params = new StringBuilder("[");
+        while (dataCopy.dataAvail() > 0) {
+            params.append(dataCopy.readInt()).append(", ");
+        }
+        if (params.length() > 1){
+		params.setLength(params.length() - 2);
+	}
+        return params.append("]").toString();
+      }catch (Throwable t) {
+        return "PARSE_ERROR: " + t.getClass().getSimpleName();
+      } finally {
+            data.recycle();
+      }
+  }
     
 }

@@ -97,9 +97,13 @@ public class FMRadioHook implements IXposedHookLoadPackage {
     		data.dataPosition(),
     		data.dataAvail()
 	));
+
         Parcel dataCopy = Parcel.obtain();
         dataCopy.setDataPosition(0);
         dataCopy.appendFrom(data, 0, data.dataSize());
+
+            String hexDump = getHexDump(dataCopy);
+            XposedBridge.log("FM DEBUG: HEX DUMP: " + hexDump);
 
         StringBuilder params = new StringBuilder("[");
         while (dataCopy.dataAvail() > 0) {
@@ -115,5 +119,31 @@ public class FMRadioHook implements IXposedHookLoadPackage {
             data.recycle();
       }
   }
+  // 输出十六进制数据
+  private String getHexDump(Parcel data) {
+    // 保存原始位置
+    int originalPos = data.dataPosition();
+    try {
+        // 重置到起始位置
+        data.setDataPosition(104);
+
+        // 正确获取原始字节 - 使用 marshall()
+        byte[] bytes = data.marshall();
+
+        // 转换为十六进制字符串
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < Math.min(bytes.length, 64); i++) {
+            sb.append(String.format("%02X ", bytes[i]));
+            if ((i + 1) % 8 == 0) sb.append(" ");
+            if ((i + 1) % 16 == 0 && i < bytes.length - 1) sb.append("\nFM DEBUG: ");
+        }
+        if (bytes.length > 64) sb.append("...");
+        return sb.toString();
+    } finally {
+        // 恢复原始位置
+        data.setDataPosition(originalPos);
+    }
+}
+
     
 }

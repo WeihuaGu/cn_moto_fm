@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements IFMRadioListener{
     
     @Override
     public void onFMServiceBinderGet() {
-	//mFMClient.startFM();
-	//mFMClient.tune(FIXED_FREQUENCY);
+	mFMClient.startFM();
+	mFMClient.tune(FIXED_FREQUENCY);
     }
 
 

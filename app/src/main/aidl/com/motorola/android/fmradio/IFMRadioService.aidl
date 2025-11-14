@@ -15,8 +15,8 @@ interface IFMRadioService {
     boolean getVolume()=9;                       // x
     boolean setVolume(int volume)=10;            // ok FM_CMD_SET_VOLUME_DONE = 22
     boolean scan()=11;                           // ok may FM_CMD_SCANNING = 25
-    boolean stopScan()=12;                        // TRANSACTION_stopScan = 0xa -> 9
-    boolean setBand(int band)=13;                // ok FM_CMD_SET_BAND_DONE = 19
+    boolean setBand(int band)=12;                // ok FM_CMD_SET_BAND_DONE = 19
+    boolean stopScan()=13;                        // 
     int getMinFrequence()=14;                    // ok 
     int getMaxFrequence()=15;                    // ok
     int getStepUnit()=16;                        // ok

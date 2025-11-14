@@ -139,6 +139,16 @@ public class FMRadioClient implements TransactionSearchListener{
             reply.recycle();
         }
     }
+    public void TRANSACTION_4_13_20(){
+      try{
+	sendTr_1(4,0);
+	mService.setBand(FMConstants.FMRADIO_BAND_US_EUROPE);
+	sendTr_1(20,0);
+      } catch (Exception e) {
+        Log.e(TAG, "4_13_20: " + e.getMessage());
+        e.printStackTrace();
+      }
+    }
 
     public boolean TRANSACTION_setMute(int mode){
 	return sendTr_1(8,mode);
@@ -167,19 +177,15 @@ public class FMRadioClient implements TransactionSearchListener{
     public boolean startFM() {
       Log.d(TAG, "=== 启动FM收音机 ===");
       try {
-        boolean enabled = mService.enable(FMConstants.FMRADIO_BAND_US_EUROPE); // US/EU band
-        Log.d(TAG, "启用结果: " + enabled);	
-
-        checkAudioIssues();
-        mService.setAudioMode(FMConstants.FMRADIO_AUDIO_MODE_STEREO);
-        mService.setMute(0);
-	mService.setVolume(9);
-
 	/**
         Log.d(TAG, "遍历查找: ");	
 	finder = new TransactionFinder(mBinder,this);
 	finder.startDiscovery(1, 42);
 	**/
+
+	mService.setVolume(0);
+        mService.enable(FMConstants.FMRADIO_BAND_US_EUROPE); // US/EU band
+	TRANSACTION_4_13_20();						    
 	return true;
       } catch (Exception e) {
         Log.e(TAG, "启动FM异常: " + e.getMessage());
@@ -307,7 +313,9 @@ public void checkAudioIssues() {
             Log.e(TAG, "tune调用失败 ");
 	}
 
-	return mService.tune(frequency);
+	sendTr_1(34,1);
+	mService.setVolume(9);
+	return bootune;
 
 	}catch(RemoteException e){
 		Log.d(TAG,"调频错误");
